@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Avatar from "../components/Avatar";
+import Navbar from "../components/Navbar";
 import "../styles/Discover.css";
 import { API } from "../config";
 
@@ -32,12 +33,6 @@ function Discover() {
       .catch(console.error);
   }, []);
 
-  function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  }
-
   const filtered = users
     .filter(
       (u) => !currentUser || u._id !== currentUser._id
@@ -61,46 +56,7 @@ function Discover() {
       <div className="discover-glow-1" />
       <div className="discover-glow-2" />
 
-      <nav className="discover-nav">
-        <div className="discover-nav-brand">
-          <div className="discover-brand-icon">
-            💬
-          </div>
-          VeilTalk
-        </div>
-
-        <div className="discover-nav-right">
-          {currentUser && (
-            <div className="discover-nav-user">
-              <Avatar
-                username={currentUser.username}
-                size={28}
-              />
-              <span>
-                {currentUser.username}
-              </span>
-            </div>
-          )}
-
-          <button
-            className="discover-btn-profile"
-            onClick={() =>
-              navigate(
-                `/profile/${currentUser?._id}`
-              )
-            }
-          >
-            Profile
-          </button>
-
-          <button
-            className="discover-btn-logout"
-            onClick={logout}
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
+      <Navbar activeTab="users" />
 
       <main className="discover-main">
         <div className="discover-header">

@@ -6,6 +6,8 @@ import Discover from "./pages/Discover_user";
 import Profile from "./pages/profile";
 import Chat from "./pages/chat";
 import EditProfile from "./pages/EditProfile";
+import Communities from "./pages/Communities";
+import CommunityChat from "./pages/CommunityChat";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/create-profile" element={<CreateProfile />} />
+      <Route path="/communities" element={<Communities />} />
+      <Route path="/community/:id" element={<CommunityChat />} />
       <Route path="/discover" element={<Discover />} />
       <Route path="/profile/:id" element={<Profile />} />
       <Route path="/chat/:id" element={<Chat />} />
@@ -22,3 +26,4 @@ function App() {
 }
 
 export default App;
+
