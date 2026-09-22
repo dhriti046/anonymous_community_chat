@@ -39,7 +39,7 @@ function Navbar({ activeTab }) {
           className={`nav-link ${currentTab === "communities" ? "active" : ""}`}
           onClick={() => navigate("/communities")}
         >
-          <span>🌐</span> Communities
+          <span>🌐</span> Discover Rooms
         </button>
         <button
           className={`nav-link ${currentTab === "users" ? "active" : ""}`}

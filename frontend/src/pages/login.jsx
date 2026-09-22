@@ -28,7 +28,7 @@ function Login() {
         bio: res.data.bio,
         interests: res.data.interests,
       }));
-      navigate("/discover");
+      navigate("/communities");
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed. Please try again.");
     } finally {

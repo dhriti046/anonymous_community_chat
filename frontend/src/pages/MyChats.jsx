@@ -49,7 +49,7 @@ function MyChats() {
       });
       setJoinedCommunities((prev) => prev.filter((c) => c._id !== communityId));
     } catch (err) {
-      console.error("Error leaving community:", err);
+      console.error("Error leaving room:", err);
     }
   };
 
@@ -80,7 +80,7 @@ function MyChats() {
           <div>
             <h1 className="mychats-title">My Chats</h1>
             <p className="mychats-subtitle">
-              Manage your joined group communities and direct message conversations
+              Manage your joined campus rooms and direct message conversations
             </p>
           </div>
           <div className="mychats-badge-count">
@@ -110,7 +110,7 @@ function MyChats() {
               className={`tab-chip ${activeFilter === "groups" ? "active" : ""}`}
               onClick={() => setActiveFilter("groups")}
             >
-              🌐 Groups ({joinedCommunities.length})
+              🌐 Joined Rooms ({joinedCommunities.length})
             </button>
             <button
               className={`tab-chip ${activeFilter === "dms" ? "active" : ""}`}
@@ -125,31 +125,31 @@ function MyChats() {
           <div className="mychats-loading">Loading your chats…</div>
         ) : (
           <div className="mychats-content">
-            {/* Joined Groups Section */}
+            {/* Joined Rooms Section */}
             {(activeFilter === "all" || activeFilter === "groups") && (
               <section className="chats-section">
                 <div className="section-header-row">
                   <h2 className="section-title">
-                    🌐 Joined Groups ({filteredGroups.length})
+                    🌐 Joined Rooms ({filteredGroups.length})
                   </h2>
                   <button
                     className="btn-discover-more"
                     onClick={() => navigate("/communities")}
                   >
-                    + Join More Groups
+                    + Join More Rooms
                   </button>
                 </div>
 
                 {filteredGroups.length === 0 ? (
                   <div className="empty-chat-box">
                     <span className="empty-icon">🌐</span>
-                    <h3>No Joined Groups</h3>
-                    <p>You haven't joined any public community rooms yet.</p>
+                    <h3>No Joined Rooms</h3>
+                    <p>You haven't joined any public campus rooms yet.</p>
                     <button
                       className="btn-action-primary"
                       onClick={() => navigate("/communities")}
                     >
-                      Explore Communities →
+                      Explore Rooms →
                     </button>
                   </div>
                 ) : (
@@ -186,7 +186,7 @@ function MyChats() {
                           <div className="group-actions">
                             <button
                               className="btn-leave"
-                              title="Leave Group"
+                              title="Leave Room"
                               onClick={(e) => handleLeaveCommunity(e, group._id)}
                             >
                               Leave

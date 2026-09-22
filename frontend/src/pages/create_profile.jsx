@@ -50,7 +50,7 @@ function CreateProfile() {
         interests: res.data.interests,
       }));
       alert(`Welcome!\n\nYour anonymous username is ${res.data.username}. Use it to chat with others without revealing your identity.`);
-      navigate("/discover");
+      navigate("/communities");
     } catch (err) {
       setError(err?.response?.data?.message || "Registration failed. Please try again.");
     } finally {

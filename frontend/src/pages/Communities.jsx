@@ -5,8 +5,21 @@ import Navbar from "../components/Navbar";
 import "../styles/Communities.css";
 import { API } from "../config";
 
-const CATEGORIES = ["All", "Tech", "Gaming", "Art", "Music", "General", "Books", "Other"];
-const EMOJI_OPTIONS = ["💬", "💻", "🎮", "🎨", "🎵", "☕", "📚", "🚀", "🔥", "⚡", "🌟"];
+const CATEGORIES = [
+  "All",
+  "Campus Life",
+  "Events",
+  "Sports",
+  "Gaming",
+  "Clubs",
+  "Hostel",
+  "Creative",
+  "Study",
+  "Random",
+  "Fest",
+  "Mess",
+];
+const EMOJI_OPTIONS = ["💬", "💻", "🎮", "🎨", "🎵", "☕", "📚", "🚀", "🔥", "⚡", "🌟", "🍕", "🎉", "⚽", "🏠"];
 
 function Communities() {
   const navigate = useNavigate();
@@ -18,10 +31,10 @@ function Communities() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showModal, setShowModal] = useState(false);
 
-  // New community form state
+  // New room form state
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("General");
+  const [category, setCategory] = useState("Campus Life");
   const [icon, setIcon] = useState("💬");
   const [error, setError] = useState("");
 
@@ -58,7 +71,7 @@ function Communities() {
       });
       navigate(`/community/${comm._id}`);
     } catch (err) {
-      console.error("Error joining community:", err);
+      console.error("Error joining room:", err);
     }
   };
 
@@ -67,7 +80,7 @@ function Communities() {
     setError("");
 
     if (!name.trim()) {
-      setError("Please enter a community name");
+      setError("Please enter a room name");
       return;
     }
 
@@ -84,13 +97,13 @@ function Communities() {
       setName("");
       setDescription("");
       setIcon("💬");
-      setCategory("General");
+      setCategory("Campus Life");
 
-      // Reload & navigate to created community
+      // Reload & navigate to created room
       loadCommunities();
       navigate(`/community/${res.data._id}`);
     } catch (err) {
-      setError(err.response?.data?.message || "Error creating community");
+      setError(err.response?.data?.message || "Error creating room");
     }
   };
 
@@ -113,16 +126,16 @@ function Communities() {
       <main className="communities-main">
         <header className="communities-header">
           <div>
-            <h1 className="communities-title">Public Communities</h1>
+            <h1 className="communities-title">Discover Rooms</h1>
             <p className="communities-subtitle">
-              Join open discussion rooms, share ideas, and connect with people
+              Find conversations happening around your campus.
             </p>
           </div>
           <button
             className="communities-btn-create"
             onClick={() => setShowModal(true)}
           >
-            <span>+</span> Create Community
+            <span>+</span> Create Room
           </button>
         </header>
 
@@ -130,7 +143,7 @@ function Communities() {
           <div className="communities-search-wrap">
             <input
               className="communities-search-input"
-              placeholder="Search communities by name or topic…"
+              placeholder="Search rooms or topics…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -154,8 +167,8 @@ function Communities() {
         {filteredCommunities.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 0", color: "var(--text-muted)" }}>
             <div style={{ fontSize: "48px", marginBottom: "12px" }}>🔍</div>
-            <h3>No communities found</h3>
-            <p>Try searching for something else or create a new community!</p>
+            <h3>No rooms found</h3>
+            <p>Try searching for something else or create a new room!</p>
           </div>
         ) : (
           <div className="communities-grid">
@@ -193,14 +206,14 @@ function Communities() {
         )}
       </main>
 
-      {/* Create Community Modal */}
+      {/* Create Room Modal */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="modal-title">Create a Public Community</h2>
+            <h2 className="modal-title">Create a Room</h2>
             {error && (
               <div
                 style={{
@@ -236,10 +249,10 @@ function Communities() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Community Name</label>
+                <label className="form-label">Room Name</label>
                 <input
                   className="form-input"
-                  placeholder="e.g. AI & ML Explorers"
+                  placeholder="e.g. Hostel 3 Mess Chat"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -266,7 +279,7 @@ function Communities() {
                 <textarea
                   className="form-input"
                   rows={3}
-                  placeholder="What is this community about?"
+                  placeholder="What is this room about?"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -281,7 +294,7 @@ function Communities() {
                   Cancel
                 </button>
                 <button type="submit" className="btn-submit">
-                  Create Community
+                  Create Room
                 </button>
               </div>
             </form>
