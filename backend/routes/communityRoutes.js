@@ -35,6 +35,45 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get communities joined by a specific user
+router.get("/user/joined", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ message: "userId query parameter is required" });
+    }
+
+    const communities = await Community.find({ members: userId })
+      .populate("createdBy", "username")
+      .sort({ updatedAt: -1 });
+
+    const formatted = await Promise.all(
+      communities.map(async (comm) => {
+        const lastMsg = await CommunityMessage.findOne({ community: comm._id })
+          .sort({ createdAt: -1 })
+          .populate("sender", "username");
+
+        return {
+          _id: comm._id,
+          name: comm.name,
+          description: comm.description,
+          category: comm.category,
+          icon: comm.icon,
+          memberCount: comm.members.length,
+          lastMessage: lastMsg ? lastMsg.text : "No messages yet",
+          lastMessageSender: lastMsg?.sender?.username || null,
+          updatedAt: lastMsg ? lastMsg.createdAt : comm.updatedAt,
+        };
+      })
+    );
+
+    res.json(formatted);
+  } catch (err) {
+    console.error("Error fetching joined communities:", err);
+    res.status(500).json({ message: "Server error fetching joined communities" });
+  }
+});
+
 // Get single community by ID
 router.get("/:id", async (req, res) => {
   try {

@@ -13,16 +13,28 @@ function Navbar({ activeTab }) {
     navigate("/login");
   }
 
-  const currentTab = activeTab || (location.pathname.startsWith("/communities") ? "communities" : "users");
+  const currentTab =
+    activeTab ||
+    (location.pathname === "/my-chats"
+      ? "my-chats"
+      : location.pathname.startsWith("/communities")
+      ? "communities"
+      : "users");
 
   return (
     <nav className="nav-bar">
       <div className="nav-brand" onClick={() => navigate("/communities")}>
         <div className="nav-brand-icon">💬</div>
-        <span className="nav-brand-text">VeilTalk</span>
+        <span className="nav-brand-text">YapYap</span>
       </div>
 
       <div className="nav-links">
+        <button
+          className={`nav-link ${currentTab === "my-chats" ? "active" : ""}`}
+          onClick={() => navigate("/my-chats")}
+        >
+          <span>💬</span> My Chats
+        </button>
         <button
           className={`nav-link ${currentTab === "communities" ? "active" : ""}`}
           onClick={() => navigate("/communities")}

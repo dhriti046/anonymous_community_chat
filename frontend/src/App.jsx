@@ -8,6 +8,7 @@ import Chat from "./pages/chat";
 import EditProfile from "./pages/EditProfile";
 import Communities from "./pages/Communities";
 import CommunityChat from "./pages/CommunityChat";
+import MyChats from "./pages/MyChats";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/create-profile" element={<CreateProfile />} />
+      <Route path="/my-chats" element={<MyChats />} />
       <Route path="/communities" element={<Communities />} />
       <Route path="/community/:id" element={<CommunityChat />} />
       <Route path="/discover" element={<Discover />} />

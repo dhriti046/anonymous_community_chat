@@ -1,4 +1,4 @@
-# VeilTalk
+# YapYap
 
 A real-time anonymous messaging platform where users connect based on shared interests while keeping their identity private.
 

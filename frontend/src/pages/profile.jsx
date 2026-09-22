@@ -38,7 +38,7 @@ function Profile() {
       <nav className="profile-nav">
         <div className="profile-nav-brand" onClick={() => navigate("/discover")}>
           <div className="profile-brand-icon">💬</div>
-          VeilTalk
+          YapYap
         </div>
         <button className="profile-btn-back" onClick={() => navigate(-1)}>
           ← Back
