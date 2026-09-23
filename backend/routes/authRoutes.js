@@ -6,45 +6,6 @@ const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
 
-const adjectives = [
-  "Happy",
-  "Cozy",
-  "Sunny",
-  "Cheerful",
-  "Lucky",
-  "Gentle",
-  "Brave",
-  "Tiny",
-  "Bright",
-  "Jolly",
-  "Sweetie",
-  "Cutie"
-];
-
-const animals = [
-  "Panda",
-  "Koala",
-  "Otter",
-  "Fox",
-  "Penguin",
-  "Bear",
-  "Rabbit",
-  "Duck",
-  "Cat",
-  "Dog",
-  "Chick",
-  "Hamster"
-];
-
-async function generateUsername() {
-  while (true) {
-    const username = `${adjectives[Math.floor(Math.random() * adjectives.length)]}${animals[Math.floor(Math.random() * animals.length)]}${Math.floor(1000 + Math.random() * 9000)}`;
-
-    const exists = await User.findOne({ username });
-    if (!exists) return username;
-  }
-}
-
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password, bio, interests } = req.body;
