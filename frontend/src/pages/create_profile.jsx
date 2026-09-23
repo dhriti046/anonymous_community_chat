@@ -6,7 +6,7 @@ import { API } from "../config";
 
 function CreateProfile() {
   const [form, setForm] = useState({
-   // username: "",
+    username: "",
     email: "",
     password: "",
     bio: "",
@@ -24,8 +24,8 @@ function CreateProfile() {
       .map((i) => i.trim())
       .filter(Boolean);
 
-    if (!form.email || !form.password) {
-      setError("Email and password are required.");
+    if (!form.username.trim() || !form.email || !form.password) {
+      setError("Username, email, and password are required.");
       return;
     }
 
@@ -34,7 +34,7 @@ function CreateProfile() {
 
     try {
       const res = await axios.post(`${API}/api/auth/register`, {
-        //username: form.username.trim(),
+        username: form.username.trim(),
         email: form.email.trim(),
         password: form.password,
         bio: form.bio.trim(),
@@ -49,7 +49,7 @@ function CreateProfile() {
         bio: res.data.bio,
         interests: res.data.interests,
       }));
-      alert(`Welcome!\n\nYour anonymous username is ${res.data.username}. Use it to chat with others without revealing your identity.`);
+      alert(`Welcome to YapYap, @${res.data.username}!`);
       navigate("/communities");
     } catch (err) {
       setError(err?.response?.data?.message || "Registration failed. Please try again.");
@@ -65,23 +65,34 @@ function CreateProfile() {
       <div className="create-glow-2" />
 
       <div className="create-card">
-        <div className="create-logo">✨</div>
+        <div className="create-logo">💬</div>
         <h1 className="create-title">Create your profile</h1>
-        <p className="create-sub">Start connecting with people who share your interests</p>
+        <p className="create-sub">Choose a unique username and start connecting around campus</p>
 
         {error && <div className="create-error">{error}</div>}
 
-        <div className="create-grid2">
-          <div className="create-field">
-            <label className="create-label">Email</label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={set("email")}
-              className="create-input"
-            />
-          </div>
+        <div className="create-field">
+          <label className="create-label">Username</label>
+          <input
+            type="text"
+            placeholder="e.g. CampusOwl, TechGeek, NightOwl..."
+            value={form.username}
+            onChange={set("username")}
+            className="create-input"
+            required
+          />
+        </div>
+
+        <div className="create-field">
+          <label className="create-label">Email</label>
+          <input
+            type="email"
+            placeholder="you@example.com"
+            value={form.email}
+            onChange={set("email")}
+            className="create-input"
+            required
+          />
         </div>
 
         <div className="create-field">
@@ -92,6 +103,7 @@ function CreateProfile() {
             value={form.password}
             onChange={set("password")}
             className="create-input"
+            required
           />
         </div>
 

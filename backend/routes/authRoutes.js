@@ -47,10 +47,24 @@ async function generateUsername() {
 
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, bio, interests } = req.body;
+    const { username, email, password, bio, interests } = req.body;
+
+    if (!username || !username.trim()) {
+      return res.status(400).json({ message: "Username is required" });
+    }
 
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const trimmedUsername = username.trim();
+
+    // Check if username is already taken (case-insensitive)
+    const existingUsername = await User.findOne({
+      username: { $regex: new RegExp(`^${trimmedUsername.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+    });
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username is already taken. Please choose another one." });
     }
 
     const existingUser = await User.findOne({ email });
@@ -58,12 +72,10 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    //The second argument (10) is the bcrypt cost factor or salt rounds. It determines how computationally expensive the hashing process is. A higher value makes hashing slower, increasing resistance to brute-force attacks
     const hashedPassword = await bcrypt.hash(password, 10);
-    const username = await generateUsername();
 
     const user = new User({
-      username,
+      username: trimmedUsername,
       email,
       password: hashedPassword,
       bio: bio || "",

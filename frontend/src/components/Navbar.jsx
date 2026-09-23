@@ -41,12 +41,6 @@ function Navbar({ activeTab }) {
         >
           <span>🌐</span> Discover Rooms
         </button>
-        <button
-          className={`nav-link ${currentTab === "users" ? "active" : ""}`}
-          onClick={() => navigate("/discover")}
-        >
-          <span>👥</span> Direct Messages
-        </button>
       </div>
 
       <div className="nav-right">

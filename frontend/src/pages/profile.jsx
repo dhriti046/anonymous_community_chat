@@ -36,7 +36,7 @@ function Profile() {
       <div className="profile-glow-2" />
 
       <nav className="profile-nav">
-        <div className="profile-nav-brand" onClick={() => navigate("/discover")}>
+        <div className="profile-nav-brand" onClick={() => navigate("/communities")}>
           <div className="profile-brand-icon">💬</div>
           YapYap
         </div>
@@ -78,24 +78,14 @@ function Profile() {
 
           <div className="profile-actions">
             {isMe ? (
-              <>
-                <button
-                  className="profile-btn profile-btn-edit"
-                  onClick={() => navigate("/edit-profile")}
-                  onMouseOver={e => e.currentTarget.style.background = "var(--bg-hover)"}
-                  onMouseOut={e => e.currentTarget.style.background = "transparent"}
-                >
-                  ✏️ Edit profile
-                </button>
-                <button
-                  className="profile-btn profile-btn-discover"
-                  onClick={() => navigate("/discover")}
-                  onMouseOver={e => e.currentTarget.style.background = "var(--bg-hover)"}
-                  onMouseOut={e => e.currentTarget.style.background = "transparent"}
-                >
-                  Discover users
-                </button>
-              </>
+              <button
+                className="profile-btn profile-btn-edit"
+                onClick={() => navigate("/edit-profile")}
+                onMouseOver={e => e.currentTarget.style.background = "var(--bg-hover)"}
+                onMouseOut={e => e.currentTarget.style.background = "transparent"}
+              >
+                ✏️ Edit profile
+              </button>
             ) : (
               <button
                 className="profile-btn profile-btn-chat"

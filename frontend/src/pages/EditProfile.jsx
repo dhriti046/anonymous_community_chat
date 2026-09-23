@@ -51,7 +51,7 @@ function EditProfile() {
   return (
     <div className="edit-page">
       <nav className="edit-nav">
-        <div className="edit-nav-brand" onClick={() => navigate("/discover")}>
+        <div className="edit-nav-brand" onClick={() => navigate("/communities")}>
           <div className="edit-brand-icon">💬</div>
           YapYap
         </div>
