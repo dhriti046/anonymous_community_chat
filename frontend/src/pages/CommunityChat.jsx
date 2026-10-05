@@ -91,14 +91,16 @@ function CommunityChat() {
     setInput("");
   };
 
-  const handleLeaveCommunity = async () => {
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+
+  const confirmLeaveRoom = async () => {
     try {
       await axios.post(`${API}/api/communities/${communityId}/leave`, {
         userId: currentUser._id,
       });
       navigate("/communities");
     } catch (err) {
-      console.error("Error leaving community:", err);
+      console.error("Error leaving room:", err);
     }
   };
 
@@ -109,7 +111,7 @@ function CommunityChat() {
           className="comm-chat-back"
           onClick={() => navigate("/communities")}
         >
-          ← Communities
+          ← Discover Rooms
         </button>
 
         <div className="comm-chat-info">
@@ -126,9 +128,9 @@ function CommunityChat() {
 
         <button
           className="comm-chat-leave"
-          onClick={handleLeaveCommunity}
+          onClick={() => setShowLeaveModal(true)}
         >
-          Leave Community
+          Leave Room
         </button>
       </nav>
 
@@ -142,7 +144,7 @@ function CommunityChat() {
             }}
           >
             <div style={{ fontSize: "40px", marginBottom: "8px" }}>💬</div>
-            <p>Welcome to {community?.name || "this community"}!</p>
+            <p>Welcome to {community?.name || "this room"}!</p>
             <p style={{ fontSize: "13px" }}>
               Be the first to start the conversation.
             </p>
@@ -190,7 +192,7 @@ function CommunityChat() {
       <div className="comm-chat-input-bar">
         <input
           className="comm-chat-input"
-          placeholder={`Message #${community?.name || "community"}...`}
+          placeholder={`Message #${community?.name || "room"}...`}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -209,6 +211,40 @@ function CommunityChat() {
           Send
         </button>
       </div>
+
+      {/* Confirmation Modal for Leaving Room */}
+      {showLeaveModal && (
+        <div className="modal-overlay" onClick={() => setShowLeaveModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">Leave Room?</h2>
+            <p style={{ color: "var(--text-secondary)", marginBottom: "20px", fontSize: "14px", lineHeight: "1.6" }}>
+              Are you sure you want to leave <strong>"{community?.name || "this room"}"</strong>? You will no longer receive live message updates or be able to participate in discussions unless you join back.
+            </p>
+            <div className="modal-actions">
+              <button
+                className="btn-cancel"
+                onClick={() => setShowLeaveModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-leave"
+                style={{
+                  background: "#ef4444",
+                  color: "#fff",
+                  border: "none",
+                  padding: "10px 18px",
+                  borderRadius: "var(--radius)",
+                  fontWeight: 600,
+                }}
+                onClick={confirmLeaveRoom}
+              >
+                Leave Room
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -41,15 +41,19 @@ function MyChats() {
       });
   }, [token, currentUser?._id, navigate]);
 
-  const handleLeaveCommunity = async (e, communityId) => {
-    e.stopPropagation();
+  const [leavingRoom, setLeavingRoom] = useState(null);
+
+  const confirmLeaveRoom = async () => {
+    if (!leavingRoom) return;
     try {
-      await axios.post(`${API}/api/communities/${communityId}/leave`, {
+      await axios.post(`${API}/api/communities/${leavingRoom._id}/leave`, {
         userId: currentUser._id,
       });
-      setJoinedCommunities((prev) => prev.filter((c) => c._id !== communityId));
+      setJoinedCommunities((prev) => prev.filter((c) => c._id !== leavingRoom._id));
     } catch (err) {
       console.error("Error leaving room:", err);
+    } finally {
+      setLeavingRoom(null);
     }
   };
 
@@ -187,7 +191,10 @@ function MyChats() {
                             <button
                               className="btn-leave"
                               title="Leave Room"
-                              onClick={(e) => handleLeaveCommunity(e, group._id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setLeavingRoom(group);
+                              }}
                             >
                               Leave
                             </button>
@@ -275,6 +282,40 @@ function MyChats() {
           </div>
         )}
       </main>
+
+      {/* Confirmation Modal for Leaving Room */}
+      {leavingRoom && (
+        <div className="modal-overlay" onClick={() => setLeavingRoom(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">Leave Room?</h2>
+            <p style={{ color: "var(--text-secondary)", marginBottom: "20px", fontSize: "14px", lineHeight: "1.6" }}>
+              Are you sure you want to leave <strong>"{leavingRoom.name}"</strong>? You will no longer receive live message updates or be able to participate in discussions unless you join back.
+            </p>
+            <div className="modal-actions">
+              <button
+                className="btn-cancel"
+                onClick={() => setLeavingRoom(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-leave"
+                style={{
+                  background: "#ef4444",
+                  color: "#fff",
+                  border: "none",
+                  padding: "10px 18px",
+                  borderRadius: "var(--radius)",
+                  fontWeight: 600,
+                }}
+                onClick={confirmLeaveRoom}
+              >
+                Leave Room
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
