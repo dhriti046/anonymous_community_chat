@@ -35,7 +35,7 @@
   justify-content: space-between;
   padding: 1rem 2.5rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(14, 14, 18, 0.65);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   position: sticky;
@@ -130,9 +130,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #fff 40%, var(--accent-light) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 
 .discover-subtitle {
@@ -201,7 +199,7 @@
 }
 
 .discover-card {
-  background: rgba(14, 14, 18, 0.45);
+  background: var(--bg-card);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border);
@@ -214,7 +212,7 @@
 .discover-card:hover {
   border-color: rgba(109, 93, 252, 0.3);
   transform: translateY(-3px);
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--glass-shadow);
 }
 
 .discover-card-top {

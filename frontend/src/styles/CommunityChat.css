@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 24px;
-  background: rgba(14, 14, 18, 0.95);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   position: sticky;

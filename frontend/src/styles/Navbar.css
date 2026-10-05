@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: rgba(14, 14, 18, 0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -105,6 +105,27 @@
 .nav-btn-logout:hover {
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
+}
+
+.nav-btn-theme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.nav-btn-theme:hover {
+  background: var(--bg-input);
+  border-color: var(--accent);
+  transform: scale(1.05);
 }
 
 @media (max-width: 640px) {

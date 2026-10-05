@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Avatar from "./Avatar";
 import "../styles/Navbar.css";
@@ -6,6 +7,16 @@ function Navbar({ activeTab }) {
   const navigate = useNavigate();
   const location = useLocation();
   const currentUser = JSON.parse(localStorage.getItem("user") || "null");
+
+  // Theme handling: defaults to 'dark', persists choice in localStorage
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   function logout() {
     localStorage.removeItem("token");
@@ -44,6 +55,15 @@ function Navbar({ activeTab }) {
       </div>
 
       <div className="nav-right">
+        <button
+          className="nav-btn-theme"
+          onClick={toggleTheme}
+          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+          aria-label="Toggle Theme"
+        >
+          {theme === "dark" ? "☀️" : "🌙"}
+        </button>
+
         {currentUser && (
           <div
             className="nav-user"

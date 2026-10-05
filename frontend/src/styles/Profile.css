@@ -35,7 +35,7 @@
   justify-content: space-between;
   padding: 1rem 2.5rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(14, 14, 18, 0.65);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -75,7 +75,7 @@
 .profile-btn-back:hover {
   border-color: var(--border-hover);
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-hover);
 }
 
 .profile-main {
@@ -87,7 +87,7 @@
 }
 
 .profile-card {
-  background: rgba(14, 14, 18, 0.45);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
