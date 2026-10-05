@@ -1,39 +1,52 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import "../styles/Login.css";
 import { API } from "../config";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  async function handleLogin() {
-    if (!email || !password) {
-      setError("Please enter your email and password.");
-      return;
-    }
+  async function handleGoogleSuccess(credentialResponse) {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post(`${API}/api/auth/login`, { email, password });
+      const res = await axios.post(`${API}/api/auth/google`, {
+        credential: credentialResponse.credential,
+      });
+
+      if (res.data.newUser) {
+        // New user — send them to profile completion with Google data pre-filled
+        navigate("/create-profile", { state: res.data });
+        return;
+      }
+
+      // Existing user — store token & user, go to rooms
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify({
-        _id: res.data._id,
-        username: res.data.username,
-        email: res.data.email,
-        bio: res.data.bio,
-        interests: res.data.interests,
-      }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          _id: res.data._id,
+          username: res.data.username,
+          email: res.data.email,
+          bio: res.data.bio,
+          interests: res.data.interests,
+          avatar: res.data.avatar,
+        })
+      );
       navigate("/communities");
     } catch (err) {
-      setError(err?.response?.data?.message || "Login failed. Please try again.");
+      setError(err?.response?.data?.message || "Sign-in failed. Please try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleGoogleError() {
+    setError("Google sign-in was cancelled or failed. Please try again.");
   }
 
   return (
@@ -44,43 +57,37 @@ function Login() {
 
       <div className="login-card">
         <div className="login-logo">💬</div>
-        <h1 className="login-title">Welcome back</h1>
-        <p className="login-sub">Sign in to your account</p>
+        <h1 className="login-title">Welcome to VeilTalk</h1>
+        <p className="login-sub">Anonymous chat for IIT Ropar students</p>
+
+        <div className="login-domain-badge">
+          <span className="login-domain-icon">🎓</span>
+          <span>Only <strong>@iitrpr.ac.in</strong> accounts allowed</span>
+        </div>
 
         {error && <div className="error">{error}</div>}
 
-        <label className="label">Email</label>
-        <input
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="input"
-          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-        />
-
-        <label className="label">Password</label>
-        <input
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="input"
-          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-        />
-
-        <button
-          onClick={handleLogin}
-          className="btn"
-          disabled={loading}
-        >
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
-
-        <div className="footer">
-          Don't have an account?{" "}
-          <Link to="/create-profile">Create one</Link>
+        <div className="login-google-wrapper">
+          {loading ? (
+            <div className="login-loading">Signing you in…</div>
+          ) : (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap={false}
+              theme="filled_blue"
+              size="large"
+              shape="rectangular"
+              text="signin_with"
+              logo_alignment="left"
+              width="100%"
+            />
+          )}
         </div>
+
+        <p className="login-hint">
+          First time here? You&apos;ll be guided to set up your profile after signing in.
+        </p>
       </div>
     </div>
   );

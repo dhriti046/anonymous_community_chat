@@ -169,3 +169,28 @@
   margin-bottom: 1.5rem;
   text-align: left;
 }
+
+/* Google avatar shown at top of profile completion form */
+.create-google-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* "optional" label hint */
+.create-optional {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  margin-left: 4px;
+}
+
+/* Reuse login domain badge in create profile page */
+.create-page .login-domain-badge {
+  margin-bottom: 2rem;
+}
