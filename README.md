@@ -1,101 +1,69 @@
-# 💬 YapYap
+#  YapYap
 
-> **Your campus. Your conversations.**
-
-**YapYap** is a real-time, campus-verified pseudonymous communication platform that enables students to discover, join, and create live discussion rooms happening around campus.
+**YapYap** is an anonymous, campus‑verified chat platform for IIT Ropar students. It lets you join topic‑based rooms or have 1‑on‑1 direct messages, all while keeping your real identity private.
 
 ---
 
-## ✨ Features
+## Problem
 
-- 🎓 **Campus-Verified & Pseudonymous** — Choose a unique pseudonymous handle (`@username`) while keeping your identity private.
-- 🌐 **Discover Rooms** — Browse, search, and filter campus discussion rooms across topics like *Campus Life*, *Events*, *Sports*, *Gaming*, *Clubs*, *Hostel*, *Creative*, *Study*, *Random*, *Fest*, and *Mess*.
-- ➕ **Create Rooms** — Create custom public campus chat rooms with custom icons, categories, and descriptions.
-- 💬 **My Chats Dashboard** — Unified dashboard showing all your joined campus rooms and active 1-on-1 direct message conversations.
-- ⚡ **Real-Time Chat** — WebSockets via Socket.IO for instant group room discussions and 1-on-1 direct messages.
-- 🔐 **Secure Authentication** — JWT stateless authentication, bcrypt password hashing, and duplicate username checking.
-- 🌙 **Modern UI** — Glassmorphism design system with responsive layouts, notification indicators, and dark aesthetic.
+Campus communication is fragmented across many WhatsApp groups and social media pages, and students often self‑censor because their real names are visible. YapYap solves this by providing a single space where verified IIT Ropar users can speak freely under a pseudonymous handle.
 
 ---
 
-## 🛠️ Tech Stack
+## Objectives
 
-### Frontend
-- **React 18** — Component-driven user interface
-- **Vite** — Dev server and bundle builder
-- **React Router 6** — Client-side navigation & routing
-- **Axios** — Promise-based HTTP client
-- **Socket.IO Client** — Real-time WebSocket connection
-
-### Backend
-- **Node.js & Express.js** — RESTful API server & room management
-- **MongoDB & Mongoose** — NoSQL database and schema modeling
-- **Socket.IO** — Real-time bidirectional event dispatching
-- **JSON Web Tokens (JWT)** — Stateless authentication middleware
-- **bcryptjs** — Password encryption & hashing
+- Authenticate exclusively via IIT Ropar Google accounts (`@iitrpr.ac.in`).
+- Allow each user to choose a unique pseudonymous handle.
+- Offer real‑time public rooms that can be discovered, filtered, and created.
+- Support private 1‑on‑1 messaging.
+- Provide a unified "My Chats" dashboard.
+- Deliver a modern UI with light/dark theme support.
 
 ---
 
-## 🚀 Getting Started
+## Team
 
-### 1. First Time Setup
-
-Clone the repository and install dependencies for both root, backend, and frontend:
-
-```bash
-git clone https://github.com/dhriti046/anonymous_community_chat.git
-cd VeilTalk-anonymous_chatapp
-npm install
-npm run install:all
-```
-
-### 2. Environment Configuration
-
-Create a `.env` file inside the `backend/` folder:
-
-```env
-MONGO_URI=mongodb://localhost:27017/yapyap
-JWT_SECRET=your_jwt_secret_key_here
-PORT=3001
-CLIENT_URL=http://localhost:5173
-```
-
-### 3. Run the Development Server
-
-Start both backend and frontend concurrently:
-
-```bash
-npm run dev
-```
-
-The application will be running at:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3001
+- **Dhriti**
+- **Takshita Nagrale**
 
 ---
 
-## 📂 Project Structure
+## Features
 
-```
-VeilTalk-anonymous_chatapp/
-├── backend/
-│   ├── middleware/        # JWT auth middleware
-│   ├── models/            # User, Community, Message, CommunityMessage schemas
-│   ├── routes/            # Auth, User, Community, and Message routes
-│   └── server.js          # Express app setup & Socket.IO events
-├── frontend/
-│   ├── public/
-│   └── src/
-│       ├── components/    # Navbar, Avatar, reusable UI components
-│       ├── pages/         # Home, Discover Rooms, MyChats, CommunityChat, Chat, Profile, EditProfile
-│       ├── styles/        # CSS styling per page & design tokens
-│       ├── App.jsx        # Route definitions
-│       └── config.js      # API endpoint configuration
-└── package.json           # Root scripts with concurrently
-```
+- **Campus‑Verified & Pseudonymous** – Sign in with your `@iitrpr.ac.in` Google account, then pick any unique handle.
+- **Discover & Create Rooms** – Browse existing rooms or spin up new ones with custom icons and descriptions.
+- **My Chats Dashboard** – See all joined rooms and active direct‑message threads in one place.
+- **Real‑Time Messaging** – Instant group and private chats powered by Socket.IO.
+- **Secure Google OAuth** – Server‑side token verification using `google-auth-library`; JWTs manage sessions.
+- **Light / Dark Theme** – System‑aware toggle with consistent styling.
+- **Leave Room Confirmation** – Prompt before leaving a room, explaining consequences.
 
 ---
 
-## 📝 License
+## Tech Stack
 
-This project is open-source and available under the [MIT License](LICENSE).
+- **Frontend** – React, Vite, React Router, Axios, @react‑oauth/google, Socket.IO client, vanilla CSS.
+- **Backend** – Node.js, Express, MongoDB (Atlas) with Mongoose, Socket.IO, google‑auth‑library, jsonwebtoken.
+
+---
+
+## Authentication Flow
+
+1. User clicks **Sign in with Google**.
+2. Google verifies the `@iitrpr.ac.in` domain and returns an ID token.
+3. Backend validates the token, checks if the user exists, and:
+   - Existing user → JWT issued, redirect to rooms.
+   - New user → Frontend asks for username, bio, interests, then creates the profile and issues a JWT.
+
+---
+
+## Project Structure
+
+```
+anonymous_community_chatapp/
+├─ backend/          # Express server, Socket.IO, auth routes, Mongoose models
+├─ frontend/         # React app, pages, components, styles
+└─ package.json      # Root scripts (install:all, dev)
+```
+
+---
