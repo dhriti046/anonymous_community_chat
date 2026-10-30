@@ -36,11 +36,19 @@ function Chat() {
   }, [currentUser]);
 
   useEffect(() => {
-    fetch(`${API}/api/users/${receiverId}`)
-      .then((r) => r.json())
+    const profileToken = localStorage.getItem("token");
+    if (!profileToken) { navigate("/login"); return; }
+    fetch(`${API}/api/users/${receiverId}`, {
+      headers: { Authorization: `Bearer ${profileToken}` },
+    })
+      .then((r) => {
+        if (r.status === 401) { navigate("/login"); throw new Error("Sign-in required"); }
+        if (!r.ok) throw new Error("Profile could not be loaded");
+        return r.json();
+      })
       .then(setPeer)
       .catch(console.error);
-  }, [receiverId]);
+  }, [receiverId, token, navigate]);
 
   useEffect(() => {
     if (!token) return;

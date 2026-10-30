@@ -5,6 +5,10 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import App from "./App";
 import "./styles/global.css";
 
+import { cleanStoredProfile } from "./profileStorage";
+
+cleanStoredProfile(localStorage);
+
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

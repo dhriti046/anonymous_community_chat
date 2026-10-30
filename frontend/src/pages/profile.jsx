@@ -11,11 +11,19 @@ function Profile() {
   const currentUser = JSON.parse(localStorage.getItem("user") || "null");
 
   useEffect(() => {
-    fetch(`${API}/api/users/${id}`)
-      .then((r) => r.json())
+    const profileToken = localStorage.getItem("token");
+    if (!profileToken) { navigate("/login"); return; }
+    fetch(`${API}/api/users/${id}`, {
+      headers: { Authorization: `Bearer ${profileToken}` },
+    })
+      .then((r) => {
+        if (r.status === 401) { navigate("/login"); throw new Error("Sign-in required"); }
+        if (!r.ok) throw new Error("Profile could not be loaded");
+        return r.json();
+      })
       .then(setUser)
       .catch(console.error);
-  }, [id]);
+  }, [id, navigate]);
 
   if (!user) {
     return (
@@ -53,7 +61,6 @@ function Profile() {
               <Avatar username={user.username} size={72} />
             </div>
             <h1 className="profile-username">{user.username}</h1>
-            {isMe && <p className="profile-email">{user.email}</p>}
           </div>
 
           {user.bio && (

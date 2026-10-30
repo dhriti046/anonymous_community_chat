@@ -7,7 +7,7 @@ import { API } from "../config";
 
 /**
  * CreateProfile is shown after a new user authenticates with Google.
- * The Google data (googleId, email, avatar, name) is passed via router state.
+ * An opaque registration token is passed via router state; identity stays server-side.
  * If somehow reached directly, we show Google sign-in again.
  */
 function CreateProfile() {
@@ -15,10 +15,10 @@ function CreateProfile() {
   const navigate = useNavigate();
 
   // Data forwarded from login.jsx after Google auth
-  const googleData = location.state || null;
+  const googleData = location.state?.registrationToken ? location.state : null;
 
   const [form, setForm] = useState({
-    username: googleData?.name?.split(" ")[0]?.toLowerCase().replace(/\s+/g, "") || "",
+    username: "",
     bio: "",
     interests: "",
   });
@@ -45,7 +45,6 @@ function CreateProfile() {
           JSON.stringify({
             _id: res.data._id,
             username: res.data.username,
-            email: res.data.email,
             bio: res.data.bio,
             interests: res.data.interests,
             avatar: res.data.avatar,
@@ -57,10 +56,6 @@ function CreateProfile() {
 
       // New user — populate state and show form
       setPendingGoogleData(res.data);
-      setForm((f) => ({
-        ...f,
-        username: res.data.name?.split(" ")[0]?.toLowerCase().replace(/\s+/g, "") || "",
-      }));
     } catch (err) {
       setError(err?.response?.data?.message || "Sign-in failed. Please try again.");
     } finally {
@@ -88,9 +83,7 @@ function CreateProfile() {
 
     try {
       const res = await axios.post(`${API}/api/auth/complete-profile`, {
-        googleId: pendingGoogleData.googleId,
-        email: pendingGoogleData.email,
-        avatar: pendingGoogleData.avatar,
+        registrationToken: pendingGoogleData.registrationToken,
         username: form.username.trim(),
         bio: form.bio.trim(),
         interests: interestArray,
@@ -102,7 +95,6 @@ function CreateProfile() {
         JSON.stringify({
           _id: res.data._id,
           username: res.data.username,
-          email: res.data.email,
           bio: res.data.bio,
           interests: res.data.interests,
           avatar: res.data.avatar,
@@ -110,6 +102,7 @@ function CreateProfile() {
       );
       navigate("/communities");
     } catch (err) {
+      if (err?.response?.status === 401) setPendingGoogleData(null);
       setError(err?.response?.data?.message || "Profile creation failed. Please try again.");
     } finally {
       setLoading(false);
@@ -163,16 +156,9 @@ function CreateProfile() {
       <div className="create-glow-2" />
 
       <div className="create-card">
-        {pendingGoogleData.avatar && (
-          <img
-            src={pendingGoogleData.avatar}
-            alt="Your Google avatar"
-            className="create-google-avatar"
-          />
-        )}
         <h1 className="create-title">Almost there!</h1>
         <p className="create-sub">
-          Signed in as <strong>{pendingGoogleData.email}</strong>. Just fill in a few details.
+          Your college account is verified. Choose a pseudonymous username.
         </p>
 
         {error && <div className="create-error">{error}</div>}

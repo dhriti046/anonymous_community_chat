@@ -16,20 +16,26 @@ const CommunityMessage = require("./models/CommunityMessage");
 const app = express();
 const server = http.createServer(app);
 
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+const clientUrls = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((url) => url.trim().replace(/\/$/, ""));
+const clientOrigin = clientUrls.length === 1 ? clientUrls[0] : clientUrls;
 
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: clientOrigin,
   credentials: true,
 }));
 
 const io = new Server(server, {
   cors: {
-    origin: CLIENT_URL,
+    origin: clientOrigin,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
+
+// The assistant applies authentication and its own bounded upload parser.
+app.use("/api/chatbot", require("./routes/chatbotRoutes").createChatbotRouter());
 
 app.use(express.json());
 

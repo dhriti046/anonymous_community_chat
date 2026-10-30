@@ -31,7 +31,6 @@ function Login() {
         JSON.stringify({
           _id: res.data._id,
           username: res.data.username,
-          email: res.data.email,
           bio: res.data.bio,
           interests: res.data.interests,
           avatar: res.data.avatar,

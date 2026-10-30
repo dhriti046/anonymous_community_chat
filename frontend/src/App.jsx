@@ -10,12 +10,15 @@ import Communities from "./pages/Communities";
 import CommunityChat from "./pages/CommunityChat";
 import MyChats from "./pages/MyChats";
 
+import CollegeAssistant from "./pages/CollegeAssistant";
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/create-profile" element={<CreateProfile />} />
+      <Route path="/assistant" element={<CollegeAssistant />} />
       <Route path="/my-chats" element={<MyChats />} />
       <Route path="/communities" element={<Communities />} />
       <Route path="/community/:id" element={<CommunityChat />} />

@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     googleId: {
+      select: false,
       type: String,
       required: true,
       unique: true,
@@ -14,6 +15,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     email: {
+      select: false,
       type: String,
       required: true,
       unique: true,
@@ -34,7 +36,14 @@ const userSchema = new mongoose.Schema(
       default: [],
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { transform: (_doc, ret) => {
+      delete ret.email;
+      delete ret.googleId;
+      return ret;
+    } },
+  }
 );
 
 module.exports = mongoose.model("User", userSchema);

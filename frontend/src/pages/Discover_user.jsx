@@ -27,8 +27,10 @@ function Discover() {
   }, [navigate]);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
     axios
-      .get(`${API}/api/users`)
+      .get(`${API}/api/users`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => setUsers(res.data))
       .catch(console.error);
   }, []);

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/EditProfile.css";
 import { API } from "../config";
+import { publicProfile } from "../profileStorage";
 
 function EditProfile() {
   const navigate = useNavigate();
@@ -33,12 +34,7 @@ function EditProfile() {
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
 
-      const updated = {
-        ...currentUser,
-        username: res.data.username,
-        bio: res.data.bio,
-        interests: res.data.interests,
-      };
+      const updated = publicProfile(res.data);
       localStorage.setItem("user", JSON.stringify(updated));
       setMsg({ type: "success", text: "Profile updated successfully!" });
     } catch (err) {
