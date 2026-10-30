@@ -1,15 +1,24 @@
 const { retrieve } = require("./retrieval");
 const NO_ANSWER = "I couldn't find enough information in the uploaded college documents to answer that. Please check with the relevant college office or ask an administrator to add the document.";
 const fallback = () => ({ answer: NO_ANSWER, supported: false, sources: [] });
-const normalize = text => text.replace(/\s+/g, " ").trim();
+const normalize = text => text ? text.replace(/\s+/g, " ").toLowerCase().trim() : "";
+function matchesPassage(passageText, quote) {
+  if (typeof quote !== "string" || !quote.trim()) return false;
+  const normPassage = normalize(passageText);
+  const normQuote = normalize(quote);
+  if (normQuote.length >= 15 && normPassage.includes(normQuote)) return true;
+  // Handle spaced letters from PDF kerning (e.g. "C e r t i f i c a t e" -> "Certificate")
+  const unspacedPassage = normPassage.replace(/([a-z]\s+){2,}[a-z]/gi, m => m.replace(/\s+/g, ""));
+  if (normQuote.length >= 15 && unspacedPassage.includes(normQuote)) return true;
+  return false;
+}
 function validateAnswer(value, passages) {
   if (value?.supported !== true || typeof value.answer !== "string" || !value.answer.trim() ||
       value.answer.length > 6000 || !Array.isArray(value.citations) || !value.citations.length || value.citations.length > 5) return fallback();
   const sources = [];
   for (const citation of value.citations) {
     const passage = passages[citation.source - 1];
-    if (!Number.isInteger(citation.source) || !passage || typeof citation.quote !== "string" ||
-        normalize(citation.quote).length < 15 || !normalize(passage.text).includes(normalize(citation.quote))) return fallback();
+    if (!Number.isInteger(citation.source) || !passage || !matchesPassage(passage.text, citation.quote)) return fallback();
     sources.push({ number: citation.source, documentId: passage.documentId, filename: passage.filename,
       page: passage.page, section: passage.section, quote: citation.quote, uploadedAt: passage.uploadedAt });
   }
@@ -47,10 +56,19 @@ async function answerQuestion(question, documents, { fetchImpl = fetch } = {}) {
   try {
     const parsed = JSON.parse(result.choices[0].message.content);
     if (parsed && typeof parsed.answer === "string" && Array.isArray(parsed.citations)) {
+      parsed.citations = parsed.citations.filter(c => {
+        const passage = passages[c.source - 1];
+        return passage && matchesPassage(passage.text, c.quote);
+      });
       if (parsed.citations.length > 5) parsed.citations = parsed.citations.slice(0, 5);
-      if (!/\[\d+\]/.test(parsed.answer) && parsed.citations.length) {
-        const citedNumbers = [...new Set(parsed.citations.map(c => c.source).filter(Number.isInteger))];
-        if (citedNumbers.length) parsed.answer = parsed.answer.trim() + " " + citedNumbers.map(n => `[${n}]`).join(" ");
+
+      const validSources = new Set(parsed.citations.map(c => c.source));
+      parsed.answer = parsed.answer.replace(/\[(\d+)\]/g, (match, num) => {
+        return validSources.has(Number(num)) ? match : "";
+      }).replace(/\s+/g, " ").trim();
+
+      if (!/\[\d+\]/.test(parsed.answer) && validSources.size > 0) {
+        parsed.answer = parsed.answer.trim() + " " + [...validSources].map(n => `[${n}]`).join(" ");
       }
     }
     return validateAnswer(parsed, passages);
