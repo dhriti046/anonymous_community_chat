@@ -257,7 +257,7 @@ Developed by:
 
 Project Links
 
-* Presentation Deck: [Add Presentation Link]
+* Presentation Deck:(https://drive.google.com/file/d/1MbzZa9RSL7I8YQ39l3O95dBX2Trcyv5f/view?usp=sharing)
 * Project Demonstration Video: https://drive.google.com/file/d/1KDSi7j3iLD3yJN_dCO79jIRsE0aIJvD-/view?usp=sharing
 
 ⸻
