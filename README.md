@@ -1,146 +1,265 @@
-#  YapYap
+YapYap – Anonymous Campus Chat Platform
 
-**YapYap** is an anonymous, campus‑verified chat platform for IIT Ropar students. It lets you join topic‑based rooms or have 1‑on‑1 direct messages, all while keeping your real identity private.
+YapYap is an anonymous, campus-verified chatting platform built exclusively for IIT Ropar students. It provides a common space where students can connect, share ideas, ask questions, and communicate freely without revealing their real identities.
 
----
+Students can join public discussion rooms, send private messages, and use an AI-powered College Assistant to find information from college brochures and documents.
 
-## Problem
+⸻
 
-Campus communication is fragmented across many WhatsApp groups and social media pages, and students often self‑censor because their real names are visible. YapYap solves this by providing a single space where verified IIT Ropar users can speak freely under a pseudonymous handle.
+Problem Statement
 
----
+Students often communicate through multiple WhatsApp groups, social media pages, and other platforms. This makes campus information difficult to find and discussions fragmented.
 
-## Objectives
+Additionally, students may hesitate to express their opinions or ask questions when their real identities are visible.
 
-- Authenticate exclusively via IIT Ropar Google accounts (`@iitrpr.ac.in`).
-- Allow each user to choose a unique pseudonymous handle.
-- Offer real‑time public rooms that can be discovered, filtered, and created.
-- Support private 1‑on‑1 messaging.
-- Provide a unified "My Chats" dashboard.
-- Deliver a modern UI with light/dark theme support.
+YapYap addresses these problems by providing:
 
----
+* A common platform for campus discussions.
+* Anonymous communication through unique usernames.
+* Private and public chatting options.
+* Easy access to college-related information through an AI chatbot.
 
-## Team
+⸻
 
-- **Dhriti**
-- **Takshita Nagrale**
+Key Features
 
----
+1. Campus Verification & Anonymous Profiles
 
-## Features
+* Sign in using your IIT Ropar Google account (@iitrpr.ac.in).
+* Choose your own unique username.
+* Your real email and Google identity remain private from other users.
+* Only verified IIT Ropar students can access the platform.
 
-- **Campus‑Verified & Pseudonymous** – Sign in with your `@iitrpr.ac.in` Google account, then pick any unique handle.
-- **Discover & Create Rooms** – Browse existing rooms or spin up new ones with custom icons and descriptions.
-- **My Chats Dashboard** – See all joined rooms and active direct‑message threads in one place.
-- **Real‑Time Messaging** – Instant group and private chats powered by Socket.IO.
-- **Secure Google OAuth** – Server‑side token verification using `google-auth-library`; JWTs manage sessions.
-- **Light / Dark Theme** – System‑aware toggle with consistent styling.
-- **Leave Room Confirmation** – Prompt before leaving a room, explaining consequences.
+2. Public Communities
 
----
+* Explore different topic-based discussion rooms.
+* Search and filter communities based on interests.
+* Create new communities with custom names, icons, and descriptions.
+* Join or leave communities whenever you want.
 
-## Tech Stack
+3. Private Direct Messaging
 
-- **Frontend** – React, Vite, React Router, Axios, @react‑oauth/google, Socket.IO client, vanilla CSS.
-- **Backend** – Node.js, Express, MongoDB (Atlas) with Mongoose, Socket.IO, google‑auth‑library, jsonwebtoken.
+* Chat privately with other students.
+* Send and receive messages in real time.
+* Maintain private one-to-one conversations.
 
----
+4. My Chats Dashboard
 
-## Authentication Flow
+* View all your joined communities in one place.
+* Access your active direct message conversations.
+* Easily switch between different chats.
 
-1. User clicks **Sign in with Google**.
-2. Google verifies the `@iitrpr.ac.in` domain and returns an ID token.
-3. Backend validates the token, checks if the user exists, and:
-   - Existing user → JWT issued, redirect to rooms.
-   - New user → Frontend asks for username, bio, interests, then creates the profile and issues a JWT.
+5. AI-Powered College Assistant (RAG Chatbot)
 
----
+YapYap includes a Retrieval-Augmented Generation (RAG) based chatbot that helps students find college-related information.
 
-## Project Structure
+How it works:
 
-```
-anonymous_community_chatapp/
-├─ backend/          # Express server, Socket.IO, auth routes, Mongoose models
-├─ frontend/         # React app, pages, components, styles
-└─ package.json      # Root scripts (install:all, dev)
-```
+1. Admins upload college brochures and other approved documents through the Knowledge Library.
+2. The system extracts text from these documents and stores it in MongoDB.
+3. When a student asks a question, the system searches the uploaded documents for relevant information.
+4. Relevant text passages are sent to the Groq AI model.
+5. The chatbot generates an answer based on the retrieved information and provides source references.
 
----
+Main capabilities:
 
-## Email privacy and registration
+* Students can ask questions about college facilities, rules, events, and other information available in uploaded documents.
+* Only configured administrators can upload or delete documents.
+* Students can view answers along with source excerpts and PDF page numbers or text sections.
+* If relevant information is not available, the chatbot indicates that it cannot find enough information.
 
-- Email and Google ID stay server-side for authentication and are excluded from profile, login, and profile-update responses.
-- User discovery and profile endpoints now require login and return only public profile fields.
-- Email is removed from profile screens and browser profile storage; previously stored identity fields are cleaned on startup.
-- New profiles no longer import Google names or photos. Registration requires a verified college account and a single-use token that expires after 10 minutes.
-- Added 10 regression checks covering privacy, registration security, and browser storage cleanup. Run `npm test --prefix backend`; build with `npm run build --prefix frontend`. Checks use mocked Google/database operations; live sign-in still needs manual testing.
+Technology used:
 
-Restart both frontend and backend and reload the browser after updating. For existing deployments, rotate `JWT_SECRET` to invalidate old sessions (this signs everyone out). If MongoDB automatic index creation is disabled, create the unique `tokenHash` and TTL `expiresAt` indexes for `pendingregistrations`.
+* Retrieval: BM25 keyword-based search.
+* AI model: openai/gpt-oss-120b through Groq.
+* Storage: MongoDB.
+* Document processing: PDF, DOCX, TXT, and Markdown.
 
-Emails remain accessible to database administrators. Socket authentication, conversation permissions, and revocable sessions remain separate security work.
+6. Secure Authentication
 
-## College Assistant (Groq RAG)
+* Google OAuth authentication.
+* Backend verification of Google ID tokens.
+* JWT-based session management.
+* Single-use registration tokens for new users.
 
-Open **College Assistant** in the navigation bar after signing in. It retrieves
-relevant passages from administrator-uploaded college documents and asks Groq to
-answer using those passages. Answers include numbered source excerpts, with PDF
-page numbers or text sections. If retrieval finds no matches or the model cannot
-provide verifiable source quotes, the assistant says it cannot find enough information.
+⸻
 
-### Setup
+Technology Stack
 
-1. Use Node.js 22.16+ (Node 24 LTS recommended), then run `npm run install:all`.
-2. Add these values to `backend/.env` alongside the existing MongoDB/Google/JWT settings:
+Component	Technologies
+Frontend	React, Vite, React Router, Axios
+Styling	CSS
+Backend	Node.js, Express.js
+Database	MongoDB Atlas, Mongoose
+Real-time Chat	Socket.IO
+Authentication	Google OAuth, google-auth-library, JWT
+AI Chatbot	RAG, Groq API, openai/gpt-oss-120b
+Document Retrieval	BM25
+Version Control	Git, GitHub
 
-   ```env
-   GROQ_API_KEY=your-groq-api-key
-   GROQ_MODEL=llama-3.3-70b-versatile
-   CHATBOT_ADMIN_IDS=your-mongodb-user-id
-   ```
+⸻
 
-   Create a key in the [Groq console](https://console.groq.com/keys). Keep it on
-   the backend; never put it in a `VITE_` variable or commit `.env`. Your MongoDB
-   user ID is the final part of your own profile URL after signing in. Multiple
-   administrators can be configured with comma-separated IDs. An empty list grants
-   nobody upload access; users cannot grant themselves access through the UI.
-3. Restart with `npm run dev`, sign in as the configured administrator, and open
-   **College Assistant**. Upload college documents in **Knowledge library**.
-4. Wait for the upload to finish, then ask a complete question. Students can ask
-   questions and see sources, but only configured administrators can upload/delete.
+Getting Started
 
-### Documents and privacy
+Deployed Website:
+https://yapyap-rooms.vercel.app/
 
-- Supports text-based PDF, DOCX, UTF-8 TXT, and Markdown files up to 5 MB and
-  200,000 extracted characters each. Scanned PDFs need OCR before upload.
-- Text is chunked with overlap and stored in the dedicated MongoDB
-  `knowledgedocuments` collection. Original file bytes are not retained. Duplicate
-  file contents are rejected. The pilot library supports up to 100 documents.
-- Retrieval uses local BM25 keyword ranking, not semantic embeddings. Questions
-  should use terms present in the documents; paraphrases with different vocabulary
-  may be missed. Groq receives only the question and up to five matching passages.
-  No OpenAI account, embedding API, or external vector database is required.
-- Upload only college information approved for all signed-in users. Document text
-  can appear in answers and source excerpts. Only administrator IDs from the
-  backend environment can manage this shared library.
-- Profiles, emails, private messages, and previous conversations are not retrieved
-  or sent to Groq. The app does not save chatbot conversations; history is held in
-  page memory and each question is answered independently. Questions and retrieved
-  excerpts are processed by Groq under its data policies.
-- Removing a document excludes it from future searches. Already displayed answers
-  and database backups are not erased by removal; clear the current chat separately.
-- AI answers can still be mistaken even when a quoted source is real. Check sources
-  and official notices for important decisions. Citation checks verify source/quote
-  existence, not every claim's meaning. Review conflicting or outdated documents.
 
-The assistant is disabled until `GROQ_API_KEY` is configured and documents are
-uploaded. No college documents or API credentials are bundled. Generation has a
-30-second timeout, requests are limited to eight questions per user per minute,
-and file parsing runs in a worker with a timeout. These limits are per server
-process; use shared rate limiting and a dedicated ingestion service when scaling.
+Follow these steps to run YapYap on your local machine.
 
-Run `npm test --prefix backend` and `npm run build --prefix frontend`. Tests cover
-actual PDF/DOCX/text extraction, retrieval, citations, administrator permissions,
-upload validation, rate limits, and failure paths. Groq and MongoDB operations are
-mocked in route tests; validate real answers with your configured service and a
-reviewed set of college questions before deployment. API usage may incur Groq charges.
+Prerequisites
+
+Make sure you have installed:
+
+* Node.js 22.16 or above (Node.js 24 LTS recommended).
+* npm.
+* MongoDB Atlas account.
+* Google OAuth credentials.
+* Groq API key (for the College Assistant).
+
+1. Clone the Repository
+
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd anonymous_community_chatapp
+
+2. Install Dependencies
+
+Run the following command from the root directory:
+
+npm run install:all
+
+This installs the dependencies required by both frontend and backend.
+
+3. Configure Environment Variables
+
+Create a .env file inside the backend folder.
+
+Add the following variables:
+
+PORT=3001
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+CLIENT_URL=http://localhost:5173
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=openai/gpt-oss-120b
+CHATBOT_ADMIN_IDS=your_mongodb_user_id
+
+Also configure your Google OAuth credentials according to the authentication setup in the project.
+
+Important:
+
+* Replace the placeholder values with your actual credentials.
+* CHATBOT_ADMIN_IDS contains the MongoDB user IDs of administrators who can upload and delete college documents.
+* Multiple admin IDs can be separated using commas.
+4. Start the Application
+
+From the root directory, run:
+
+npm run dev
+
+This starts the frontend and backend development servers.
+
+Open the frontend URL in your browser:
+
+http://localhost:5173
+
+Sign in using your IIT Ropar Google account to start using YapYap.
+
+⸻
+
+College Assistant Setup
+
+To use the AI-powered College Assistant:
+
+1. Configure your Groq API key in backend/.env.
+2. Add your MongoDB user ID to CHATBOT_ADMIN_IDS.
+3. Restart the application.
+4. Sign in using the configured administrator account.
+5. Open the College Assistant section.
+6. Go to the Knowledge Library.
+7. Upload college brochures and other approved documents.
+8. Once processing is complete, students can ask questions about the uploaded information.
+
+Supported Documents
+
+* PDF
+* DOCX
+* TXT
+* Markdown
+
+Document limitations:
+
+* Maximum file size: 5 MB.
+* Maximum extracted text: 200,000 characters per document.
+* Scanned PDFs require OCR before uploading.
+* The pilot knowledge library supports up to 100 documents.
+
+The system uses keyword-based BM25 retrieval to find relevant passages. Therefore, questions containing terms related to the uploaded documents generally produce better results.
+
+The chatbot does not maintain conversation history. Each question is processed independently using the available documents.
+
+⸻
+
+Privacy & Security
+
+YapYap is designed to protect the real identities of its users.
+
+Some important privacy measures include:
+
+* Only IIT Ropar Google accounts are accepted.
+* Email addresses and Google IDs are kept on the backend.
+* Public profile APIs return only necessary profile information.
+* Google names and profile pictures are not automatically imported.
+* Registration uses single-use tokens that expire after 10 minutes.
+* User discovery and profile endpoints require authentication.
+* The College Assistant only accesses administrator-uploaded college documents.
+* Private messages and user profiles are not sent to the chatbot.
+
+Note: Email information is still accessible to database administrators. Socket authentication, conversation permissions, and revocable sessions require separate security improvements.
+
+⸻
+
+Running Tests
+
+To run backend tests:
+
+npm test --prefix backend
+
+To build the frontend:
+
+npm run build --prefix frontend
+
+The tests cover authentication, privacy, registration, document processing, chatbot retrieval, citations, administrator permissions, and other important functionality.
+
+Some external services, including MongoDB and Groq, are mocked during automated testing. Real authentication and chatbot responses should also be tested manually.
+
+⸻
+
+Future Improvements
+
+* Improve chatbot retrieval using semantic embeddings.
+* Add stronger Socket.IO authentication and message authorization.
+* Improve moderation and reporting features.
+* Add more campus-related information sources.
+* Improve chatbot response accuracy and document search.
+* Add more community discovery and personalization options.
+
+⸻
+
+Team
+
+Developed by:
+
+* Dhriti
+* Takshita Nagrale
+
+⸻
+
+Project Links
+
+* Presentation Deck: [Add Presentation Link]
+* Project Demonstration Video: [Add Video Link]
+
+⸻
+
+YapYap – Connect Freely. Stay Anonymous. Stay Connected.
